@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ShoeGrab.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="keyWords" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Jordan,Spizike,3M</Value>
+    </Setting>
+    <Setting Name="watchUsers" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NikeStore</Value>
+    </Setting>
+    <Setting Name="browserPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="browserSetting" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
