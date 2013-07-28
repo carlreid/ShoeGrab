@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Drawing;
 using System.Net;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -42,10 +43,11 @@ namespace ShoeGrab
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            if (requestAuthToken())
-            {
-                webView.Source = new Uri("https://api.twitter.com/oauth/authenticate?oauth_token=" + _token.AccessToken);
-            }
+            //if (requestAuthToken())
+            //{
+            //    webView.Source = new Uri("https://api.twitter.com/oauth/authenticate?oauth_token=" + _token.AccessToken);
+            //}
+            webView.Source = new Uri("http://store.nike.com/us/en_us/pd/jordan-spizike-shoe/pid-705452/pgid-848594");
         }
 
         void webView_DocumentReady(object sender, Awesomium.Core.UrlEventArgs e)
@@ -218,6 +220,23 @@ namespace ShoeGrab
                                     webForwardButton.Visible = true;
                                     webBackButton.Visible = true;
 
+                                    //Begin auto checkout
+                                    if (Properties.Settings.Default.autoCheckout)
+                                    {
+                                        //Wait till the page has loaded
+                                        while (webView.IsLoading)
+                                        {
+                                            Application.DoEvents();
+                                        }
+
+                                        //Once loaded, chech to see if the URL has /pd/ before running the autoCart code
+                                        if (webView.Source.ToString().Contains("/pd/"))
+                                        {
+                                            doAutoCheckout();
+                                        }
+                                    }
+
+
                                 }));
                             }
                             break;
@@ -243,6 +262,83 @@ namespace ShoeGrab
             {
                 tweetsCheckedCounterLabel.Invoke(new MethodInvoker(delegate { tweetsCheckedCounterLabel.Text = (++_tweetsChecked).ToString(); }));
             }
+        }
+
+        private void doAutoCheckout(){
+            webView.ExecuteJavascript(@"
+                                jQuery.expr[':'].regex = function(elem, index, match) {
+	                                var matchParams = match[3].split(','),
+		                                validLabels = /^(data|css):/,
+		                                attr = {
+			                                method: matchParams[0].match(validLabels) ? 
+						                                matchParams[0].split(':')[0] : 'attr',
+			                                property: matchParams.shift().replace(validLabels,'')
+		                                },
+		                                regexFlags = 'ig',
+		                                regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+	                                return regex.test(jQuery(elem)[attr.method](attr.property));
+                                }
+
+                                var size = " + Properties.Settings.Default.shoeSize + @";
+
+                                //Show dropdowns - Not needed.
+                                //$(""a[class$='nike-button nike-button-orange buy-button']"").click();
+
+                                //Select shoe size
+                                $(""select[name$='skuAndSize']"").val(function() {
+	                                return $(""option:regex(value, :"" + size + "")"").val();
+                                }).change();
+
+
+                                //Add to cart
+                                //$(""div[class$='button-container add-to-cart']"").click();
+                                $(""div:regex(class, add-to-cart)"").click();
+
+                                //Checkout
+                                //$(""div[class$='cart facet nav-section l-cell']"").children().children().click();
+                                $(""div:regex(class, cart)"").children().children().click();"
+                );
+
+            //Wait till the page has loaded
+            while (webView.IsLoading)
+            {
+                Application.DoEvents();
+            }
+
+
+            switch (Properties.Settings.Default.checkoutSetting)
+            {
+                case 0:
+                    webView.ExecuteJavascript(@"
+                        document.getElementById('tunnelEmailInput').value = '" + Properties.Settings.Default.checkoutEmail + @"';
+                        document.getElementById('tunnelPasswordInput').value = '" + Properties.Settings.Default.checkoutPassword + @"';
+                        document.getElementById('ch4_loginButton').click();"
+                    );
+                    break;
+                case 1:
+                    webView.ExecuteJavascript(@"
+                        document.getElementById('ch4_loginGuestBtn').click();"
+                    );  
+                    break;
+                case 2:
+                    webView.ExecuteJavascript(@"
+                        window.location = document.getElementById('ch4_loginPaypal').children[2].children[0].getAttribute('href');"
+                    );
+                    break;
+                default:    //Guest checkout
+                    webView.ExecuteJavascript(@"
+                        document.getElementById('ch4_loginGuestBtn').click();"
+                    );  
+                    break;
+            }
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            webView.ExecuteJavascript(@"
+                        window.location = document.getElementById('ch4_loginPaypal').children[2].children[0].getAttribute('href');"
+            );
         }
         
         private void managerButton_Click(object sender, EventArgs e)
@@ -398,8 +494,5 @@ namespace ShoeGrab
                     break;
             }
         }
-
-
-
     }
 }

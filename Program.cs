@@ -16,8 +16,9 @@ namespace ShoeGrab
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new mainForm());
-            Application.Run(new OCRImage());
+            Application.Run(new mainForm());
+            //Application.Run(new OCRImage());
+            //Application.Run(new SettingsTweaker());
 
         }
     }

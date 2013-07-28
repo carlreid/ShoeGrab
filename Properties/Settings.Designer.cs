@@ -70,5 +70,65 @@ namespace ShoeGrab.Properties {
                 this["browserSetting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool autoCheckout {
+            get {
+                return ((bool)(this["autoCheckout"]));
+            }
+            set {
+                this["autoCheckout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("11")]
+        public int shoeSize {
+            get {
+                return ((int)(this["shoeSize"]));
+            }
+            set {
+                this["shoeSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int checkoutSetting {
+            get {
+                return ((int)(this["checkoutSetting"]));
+            }
+            set {
+                this["checkoutSetting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("username@provider.com")]
+        public string checkoutEmail {
+            get {
+                return ((string)(this["checkoutEmail"]));
+            }
+            set {
+                this["checkoutEmail"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("password")]
+        public string checkoutPassword {
+            get {
+                return ((string)(this["checkoutPassword"]));
+            }
+            set {
+                this["checkoutPassword"] = value;
+            }
+        }
     }
 }

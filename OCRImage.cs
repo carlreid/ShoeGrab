@@ -58,6 +58,7 @@ namespace ShoeGrab
             im = im.Resize(3, INTER.CV_INTER_CUBIC);
             //Not really sure what this does, do it anyway.
             im = im.ThresholdAdaptive(new Gray(255), Emgu.CV.CvEnum.ADAPTIVE_THRESHOLD_TYPE.CV_ADAPTIVE_THRESH_GAUSSIAN_C, Emgu.CV.CvEnum.THRESH.CV_THRESH_BINARY_INV, 45, new Gray(0));
+            //Emgu.CV.CvInvoke.cvShowImage("im (1)", im);
 
             //Create a new image used for clean ups.
             Image<Gray, byte> cleanUp = im.ThresholdBinaryInv(new Gray(0), new Gray(255));
@@ -67,7 +68,7 @@ namespace ShoeGrab
 
             //Bitwise AND these together to perform the clean up.
             im = im & cleanUp;
-            //Emgu.CV.CvInvoke.cvShowImage("im & cleanUp (3)", im);
+            //Emgu.CV.CvInvoke.cvShowImage("im & cleanUp (2)", im);
 
             //Begin eroding the image to get rid of further junk while maining circle border
             Image<Gray, byte> eroded = im.Copy();
@@ -75,7 +76,7 @@ namespace ShoeGrab
             //Create a structure element of type ellipse to fill in any holes caused by the erode (within characters)
             StructuringElementEx element = new StructuringElementEx(7, 7, 0, 0, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
             eroded = eroded.MorphologyEx(element, CV_MORPH_OP.CV_MOP_CLOSE, 1);
-            //Emgu.CV.CvInvoke.cvShowImage("eroded (4)", eroded);
+            //Emgu.CV.CvInvoke.cvShowImage("eroded (3)", eroded);
 
             //Create a new image to find the border area.
             Image<Gray, byte> bordered = im.CopyBlank();
@@ -99,7 +100,7 @@ namespace ShoeGrab
             cleanUp = cleanUp.ThresholdBinaryInv(new Gray(0), new Gray(255));
             //Bitwise AND the cleanup and image together to get rid of the cleanup stuff.
             im = im & cleanUp;
-            //Emgu.CV.CvInvoke.cvShowImage("im & bordered + hole fill(6)", im);
+            //Emgu.CV.CvInvoke.cvShowImage("im & bordered + hole fill(5)", im);
 
             //Creater a larger ellipse element to fill in some of the holes that were introduced before eroding
             element = new StructuringElementEx(9, 9, 0, 0, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
@@ -112,6 +113,7 @@ namespace ShoeGrab
             cleanUp = cleanUp.ThresholdBinaryInv(new Gray(0), new Gray(255));
             //Bitwise AND them together to remove the clean up bits
             im = im & cleanUp;
+            //Emgu.CV.CvInvoke.cvShowImage("clean up(6)", im);
 
             //Perform these to cleap up the picture some more
             im = im.Erode(1);
@@ -260,41 +262,41 @@ namespace ShoeGrab
             return resultImage;
         }
 
-        //http://tech.pro/tutorial/660/csharp-tutorial-convert-a-color-image-to-grayscale
-        public static Bitmap MakeGrayscale3(Bitmap original)
-        {
-            //create a blank bitmap the same size as original
-            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+        ////http://tech.pro/tutorial/660/csharp-tutorial-convert-a-color-image-to-grayscale
+        //public static Bitmap MakeGrayscale3(Bitmap original)
+        //{
+        //    //create a blank bitmap the same size as original
+        //    Bitmap newBitmap = new Bitmap(original.Width, original.Height);
 
-            //get a graphics object from the new image
-            Graphics g = Graphics.FromImage(newBitmap);
+        //    //get a graphics object from the new image
+        //    Graphics g = Graphics.FromImage(newBitmap);
 
-            //create the grayscale ColorMatrix
-            ColorMatrix colorMatrix = new ColorMatrix(
-            new float[][] 
-              {
-                 new float[] {.3f, .3f, .3f, 0, 0},
-                 new float[] {.59f, .59f, .59f, 0, 0},
-                 new float[] {.11f, .11f, .11f, 0, 0},
-                 new float[] {0, 0, 0, 1, 0},
-                 new float[] {0, 0, 0, 0, 1}
-              });
+        //    //create the grayscale ColorMatrix
+        //    ColorMatrix colorMatrix = new ColorMatrix(
+        //    new float[][] 
+        //      {
+        //         new float[] {.3f, .3f, .3f, 0, 0},
+        //         new float[] {.59f, .59f, .59f, 0, 0},
+        //         new float[] {.11f, .11f, .11f, 0, 0},
+        //         new float[] {0, 0, 0, 1, 0},
+        //         new float[] {0, 0, 0, 0, 1}
+        //      });
 
-            //create some image attributes
-            ImageAttributes attributes = new ImageAttributes();
+        //    //create some image attributes
+        //    ImageAttributes attributes = new ImageAttributes();
 
-            //set the color matrix attribute
-            attributes.SetColorMatrix(colorMatrix);
+        //    //set the color matrix attribute
+        //    attributes.SetColorMatrix(colorMatrix);
 
-            //draw the original image on the new image
-            //using the grayscale color matrix
-            g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
-               0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+        //    //draw the original image on the new image
+        //    //using the grayscale color matrix
+        //    g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+        //       0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
 
-            //dispose the Graphics object
-            g.Dispose();
-            return newBitmap;
-        }
+        //    //dispose the Graphics object
+        //    g.Dispose();
+        //    return newBitmap;
+        //}
 
         private void button2_Click(object sender, EventArgs e)
         {

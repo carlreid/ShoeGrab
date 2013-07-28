@@ -14,5 +14,20 @@
     <Setting Name="browserSetting" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="autoCheckout" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="shoeSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">11</Value>
+    </Setting>
+    <Setting Name="checkoutSetting" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="checkoutEmail" Type="System.String" Scope="User">
+      <Value Profile="(Default)">username@provider.com</Value>
+    </Setting>
+    <Setting Name="checkoutPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">password</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
