@@ -46,9 +46,13 @@
             this.bitcoinAdrLink = new MetroFramework.Controls.MetroLink();
             this.donateLabel = new MetroFramework.Controls.MetroLabel();
             this.button1 = new System.Windows.Forms.Button();
+            this.linkSniperEnabledLabel = new MetroFramework.Controls.MetroLabel();
+            this.rsvpEnabledLabel = new MetroFramework.Controls.MetroLabel();
+            this.qrCodeBitcoinPicture = new System.Windows.Forms.PictureBox();
             this.updatePanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.userAvatar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qrCodeBitcoinPicture)).BeginInit();
             this.SuspendLayout();
             // 
             // managerButton
@@ -73,6 +77,10 @@
             this.updatePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.updatePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.updatePanel.Controls.Add(this.qrCodeBitcoinPicture);
+            this.updatePanel.Controls.Add(this.rsvpEnabledLabel);
+            this.updatePanel.Controls.Add(this.linkSniperEnabledLabel);
             this.updatePanel.Controls.Add(this.tweetsCheckedCounterLabel);
             this.updatePanel.Controls.Add(this.tweetsCheckedLabel);
             this.updatePanel.Controls.Add(this.tableLayoutPanel1);
@@ -113,7 +121,7 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(209)))), ((int)(((byte)(17)))), ((int)(((byte)(65)))));
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -154,8 +162,6 @@
             // 
             // lastTweetLabel
             // 
-            this.lastTweetLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lastTweetLabel.AutoSize = true;
             this.lastTweetLabel.Location = new System.Drawing.Point(42, 136);
             this.lastTweetLabel.Name = "lastTweetLabel";
@@ -255,6 +261,7 @@
             // 
             // bitcoinAdrLink
             // 
+            this.bitcoinAdrLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bitcoinAdrLink.Location = new System.Drawing.Point(1148, 604);
             this.bitcoinAdrLink.Name = "bitcoinAdrLink";
             this.bitcoinAdrLink.Size = new System.Drawing.Size(263, 23);
@@ -266,6 +273,7 @@
             // 
             // donateLabel
             // 
+            this.donateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.donateLabel.AutoSize = true;
             this.donateLabel.FontWeight = MetroFramework.MetroLabelWeight.Regular;
             this.donateLabel.Location = new System.Drawing.Point(1099, 605);
@@ -285,6 +293,45 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // linkSniperEnabledLabel
+            // 
+            this.linkSniperEnabledLabel.AutoSize = true;
+            this.linkSniperEnabledLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.linkSniperEnabledLabel.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.linkSniperEnabledLabel.ForeColor = System.Drawing.Color.Red;
+            this.linkSniperEnabledLabel.Location = new System.Drawing.Point(42, 46);
+            this.linkSniperEnabledLabel.Name = "linkSniperEnabledLabel";
+            this.linkSniperEnabledLabel.Size = new System.Drawing.Size(190, 25);
+            this.linkSniperEnabledLabel.TabIndex = 8;
+            this.linkSniperEnabledLabel.Text = "Link Sniper: Disabled";
+            this.linkSniperEnabledLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.linkSniperEnabledLabel.UseCustomForeColor = true;
+            // 
+            // rsvpEnabledLabel
+            // 
+            this.rsvpEnabledLabel.AutoSize = true;
+            this.rsvpEnabledLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.rsvpEnabledLabel.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.rsvpEnabledLabel.ForeColor = System.Drawing.Color.Red;
+            this.rsvpEnabledLabel.Location = new System.Drawing.Point(92, 21);
+            this.rsvpEnabledLabel.Name = "rsvpEnabledLabel";
+            this.rsvpEnabledLabel.Size = new System.Drawing.Size(140, 25);
+            this.rsvpEnabledLabel.TabIndex = 9;
+            this.rsvpEnabledLabel.Text = "RSVP: Disabled";
+            this.rsvpEnabledLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.rsvpEnabledLabel.UseCustomForeColor = true;
+            // 
+            // qrCodeBitcoinPicture
+            // 
+            this.qrCodeBitcoinPicture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.qrCodeBitcoinPicture.Image = global::ShoeGrab.Properties.Resources.qr;
+            this.qrCodeBitcoinPicture.Location = new System.Drawing.Point(1176, 439);
+            this.qrCodeBitcoinPicture.Name = "qrCodeBitcoinPicture";
+            this.qrCodeBitcoinPicture.Size = new System.Drawing.Size(100, 100);
+            this.qrCodeBitcoinPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.qrCodeBitcoinPicture.TabIndex = 10;
+            this.qrCodeBitcoinPicture.TabStop = false;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -301,6 +348,7 @@
             this.Controls.Add(this.webBackButton);
             this.Controls.Add(this.managerButton);
             this.Controls.Add(this.webView);
+            this.MinimumSize = new System.Drawing.Size(1432, 627);
             this.Name = "mainForm";
             this.Text = "ShoeGrab";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -310,6 +358,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.userAvatar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qrCodeBitcoinPicture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -335,6 +384,9 @@
         private MetroFramework.Controls.MetroLink bitcoinAdrLink;
         private MetroFramework.Controls.MetroLabel donateLabel;
         private System.Windows.Forms.Button button1;
+        private MetroFramework.Controls.MetroLabel linkSniperEnabledLabel;
+        private MetroFramework.Controls.MetroLabel rsvpEnabledLabel;
+        private System.Windows.Forms.PictureBox qrCodeBitcoinPicture;
     }
 }
 

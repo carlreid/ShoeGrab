@@ -29,5 +29,23 @@
     <Setting Name="checkoutPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">password</Value>
     </Setting>
+    <Setting Name="firstName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Joe</Value>
+    </Setting>
+    <Setting Name="lastName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Bloggs</Value>
+    </Setting>
+    <Setting Name="rsvpEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="linkEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="rsvpKeyWords" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Jordan,Spizike,3M,RSVP</Value>
+    </Setting>
+    <Setting Name="rsvpWatchUsers" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NikeBoston,NikeNYC</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

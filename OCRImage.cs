@@ -153,8 +153,8 @@ namespace ShoeGrab
         {
             //Create the OCR engine instance
             TesseractEngine engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
-            //We know that the hastags only include #[A-Z]
-            engine.SetVariable("tessedit_char_whitelist", "#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            //We know that the hastags only include #[A-Z] --- TODO: Some of them have numbers although OCR seems to struggle distinguishing from 5 and S for example. (https://twitter.com/NikeChicago/media/grid)
+            engine.SetVariable("tessedit_char_whitelist", "#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
             //Call the engine and get the page result
             Page result = engine.Process(image);
 
@@ -301,6 +301,12 @@ namespace ShoeGrab
         private void button2_Click(object sender, EventArgs e)
         {
             button2.Text = (Int32.Parse(button2.Text) + 1).ToString();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Bitmap ocr = new Bitmap(@"C:\Users\Carl\Desktop\boxtiff-2.01.eng.tar\eng\eng.arial.g4.tif");
+            getHashTag(ocr);
         }
 
     }

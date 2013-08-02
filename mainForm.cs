@@ -39,15 +39,48 @@ namespace ShoeGrab
             //Setup the stream
             _tStream = new TweetStream(processTweetStream);
             _tStream.StreamUrl = "https://userstream.twitter.com/1.1/user.json";
+
+            Properties.Settings.Default.PropertyChanged += settingsChanged;
+
+        }
+
+        void settingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "rsvpEnabled")
+            {
+                if (Properties.Settings.Default.rsvpEnabled)
+                {
+                    rsvpEnabledLabel.Text = "RSVP: Enabled";
+                    rsvpEnabledLabel.ForeColor = Color.Lime;
+                }
+                else
+                {
+                    rsvpEnabledLabel.Text = "RSVP: Disabled";
+                    rsvpEnabledLabel.ForeColor = Color.Red;
+                }
+            }
+            else if (e.PropertyName == "linkEnabled")
+            {
+                if (Properties.Settings.Default.linkEnabled)
+                {
+                    linkSniperEnabledLabel.Text = "Link Sniper: Enabled";
+                    linkSniperEnabledLabel.ForeColor = Color.Lime;
+                }
+                else
+                {
+                    linkSniperEnabledLabel.Text = "Link Sniper: Disabled";
+                    linkSniperEnabledLabel.ForeColor = Color.Red;
+                }
+            }
         }
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            //if (requestAuthToken())
-            //{
-            //    webView.Source = new Uri("https://api.twitter.com/oauth/authenticate?oauth_token=" + _token.AccessToken);
-            //}
-            webView.Source = new Uri("http://store.nike.com/us/en_us/pd/jordan-spizike-shoe/pid-705452/pgid-848594");
+            if (requestAuthToken())
+            {
+                webView.Source = new Uri("https://api.twitter.com/oauth/authenticate?oauth_token=" + _token.AccessToken);
+            }
+            //webView.Source = new Uri("http://store.nike.com/us/en_us/pd/jordan-spizike-shoe/pid-705452/pgid-848594");
         }
 
         void webView_DocumentReady(object sender, Awesomium.Core.UrlEventArgs e)
@@ -196,61 +229,86 @@ namespace ShoeGrab
 
         private void processTweetStream(Tweet tweet, bool force = false)
         {
-            if (_lookSettings.checkKeywords(tweet))
+            //Only check if the link sniper or rsvp is enabled.
+            if (Properties.Settings.Default.linkEnabled || Properties.Settings.Default.rsvpEnabled)
             {
-                List<string> urls = parseURLFromString(tweet.Text);
-
-                if (urls.Count > 0 && Uri.IsWellFormedUriString(urls[0], UriKind.RelativeOrAbsolute))
+                //Check to see if the tweet contains a keyword/username
+                if (_lookSettings.checkKeywords(tweet))
                 {
-                    switch (Properties.Settings.Default.browserSetting)
+                    //If the link sniper is enabled, check to see if there's a link.
+                    if (Properties.Settings.Default.linkEnabled)
                     {
-                        case 0:
-                            if (webView.InvokeRequired)
+                        List<string> urls = parseURLFromString(tweet.Text);
+
+                        if (urls.Count > 0 && Uri.IsWellFormedUriString(urls[0], UriKind.RelativeOrAbsolute))
+                        {
+                            switch (Properties.Settings.Default.browserSetting)
                             {
-                                webView.Invoke(new MethodInvoker(delegate
-                                {
-                                    webView.Visible = true;
-                                    //webView.BringToFront();
-                                    webView.Source = new Uri(urls[0]);
-                                    this.TopMost = true;
-                                    this.TopMost = false;
-
-                                    updatePanel.Visible = false;
-
-                                    webForwardButton.Visible = true;
-                                    webBackButton.Visible = true;
-
-                                    //Begin auto checkout
-                                    if (Properties.Settings.Default.autoCheckout)
+                                case 0:
+                                    if (webView.InvokeRequired)
                                     {
-                                        //Wait till the page has loaded
-                                        while (webView.IsLoading)
+                                        webView.Invoke(new MethodInvoker(delegate
                                         {
-                                            Application.DoEvents();
-                                        }
+                                            webView.Visible = true;
+                                            //webView.BringToFront();
+                                            webView.Source = new Uri(urls[0]);
+                                            this.TopMost = true;
+                                            this.TopMost = false;
 
-                                        //Once loaded, chech to see if the URL has /pd/ before running the autoCart code
-                                        if (webView.Source.ToString().Contains("/pd/"))
-                                        {
-                                            doAutoCheckout();
-                                        }
+                                            updatePanel.Visible = false;
+
+                                            webForwardButton.Visible = true;
+                                            webBackButton.Visible = true;
+
+                                            //Begin auto checkout
+                                            if (Properties.Settings.Default.autoCheckout)
+                                            {
+                                                //Wait till the page has loaded
+                                                while (webView.IsLoading)
+                                                {
+                                                    Application.DoEvents();
+                                                }
+
+                                                //Once loaded, chech to see if the URL has /pd/ before running the autoCart code
+                                                if (webView.Source.ToString().Contains("/pd/"))
+                                                {
+                                                    doAutoCheckout();
+                                                }
+                                            }
+
+
+                                        }));
                                     }
-
-
-                                }));
+                                    break;
+                                case 1:
+                                    System.Diagnostics.Process.Start(urls[0]);
+                                    break;
+                                case 2:
+                                    string browserPath = System.IO.Path.GetFullPath(Properties.Settings.Default.browserPath);
+                                    System.Diagnostics.Process.Start(browserPath, urls[0]);
+                                    break;
+                                default:
+                                    break;
                             }
-                            break;
-                        case 1:
-                            System.Diagnostics.Process.Start(urls[0]);
-                            break;
-                        case 2:
-                            string browserPath = System.IO.Path.GetFullPath(Properties.Settings.Default.browserPath);
-                            System.Diagnostics.Process.Start(browserPath, urls[0]);
-                            break;
-                        default:
-                            break;
+                            //MessageBox.Show(tweet.Text);
+                        }
                     }
-                    //MessageBox.Show(tweet.Text);
+
+                    
+                    //If the RSVP is enabled, check to see if the tweet contains #RSVP and specified keyword
+                    if (Properties.Settings.Default.linkEnabled)
+                    {
+                        if (tweet.Text.Contains("#RSVP") && tweet.Text.Contains(Properties.Settings.Default.rsvpKeyWords))
+                        {
+                            //TODO:
+                            // 1) Download image
+                            // 2) Cleanup image + OCR
+                            // 3) DM the result
+                        }
+                    }
+
+
+
                 }
             }
 

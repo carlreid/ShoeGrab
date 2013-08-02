@@ -130,5 +130,77 @@ namespace ShoeGrab.Properties {
                 this["checkoutPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Joe")]
+        public string firstName {
+            get {
+                return ((string)(this["firstName"]));
+            }
+            set {
+                this["firstName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Bloggs")]
+        public string lastName {
+            get {
+                return ((string)(this["lastName"]));
+            }
+            set {
+                this["lastName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool rsvpEnabled {
+            get {
+                return ((bool)(this["rsvpEnabled"]));
+            }
+            set {
+                this["rsvpEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool linkEnabled {
+            get {
+                return ((bool)(this["linkEnabled"]));
+            }
+            set {
+                this["linkEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Jordan,Spizike,3M,RSVP")]
+        public string rsvpKeyWords {
+            get {
+                return ((string)(this["rsvpKeyWords"]));
+            }
+            set {
+                this["rsvpKeyWords"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NikeBoston,NikeNYC")]
+        public string rsvpWatchUsers {
+            get {
+                return ((string)(this["rsvpWatchUsers"]));
+            }
+            set {
+                this["rsvpWatchUsers"] = value;
+            }
+        }
     }
 }

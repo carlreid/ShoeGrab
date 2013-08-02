@@ -27,12 +27,20 @@ namespace ShoeGrab
         private void setupKeywordText(){
             List<String> keyWords = _lookSettings.getKeyWords();
             keyWordTextBox.Text = string.Join(Environment.NewLine, keyWords);
+
+            //RSVP
+            keyWords = _lookSettings.getRSVPKeyWords();
+            rsvpKeywordTextBox.Text = string.Join(Environment.NewLine, keyWords);
         }
 
         private void setupUsernameText()
         {
             List<String> usernames = _lookSettings.getWatchUsers();
             userNameTextBox.Text = string.Join(Environment.NewLine, usernames);
+
+            //RSVP
+            usernames = _lookSettings.getRSVPWatchUsers();
+            rsvpUserNameTextBox.Text = string.Join(Environment.NewLine, usernames);
         }
 
         private void KeyWordManager_Load(object sender, EventArgs e)
@@ -75,6 +83,42 @@ namespace ShoeGrab
             {
                 _followUser(user);
             }
+        }
+
+        private void rsvpAcceptKeyWords_Click(object sender, EventArgs e)
+        {
+            List<String> newKeyWords = new List<string>(rsvpKeywordTextBox.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
+            _lookSettings.rsvpSetKeyWords(newKeyWords);
+        }
+
+        private void rsvpDenyKeyWords_Click(object sender, EventArgs e)
+        {
+            List<String> keyWords = _lookSettings.getRSVPKeyWords();
+            rsvpKeywordTextBox.Text = string.Join(Environment.NewLine, keyWords);
+        }
+
+        private void rsvpFollowAllButton_Click(object sender, EventArgs e)
+        {
+            //Accept the list first
+            List<String> newUserNames = new List<string>(rsvpUserNameTextBox.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
+            _lookSettings.rsvpSetWatchUser(newUserNames);
+
+            foreach (string user in _lookSettings.getRSVPWatchUsers())
+            {
+                _followUser(user);
+            }
+        }
+
+        private void rsvpAcceptUsernames_Click(object sender, EventArgs e)
+        {
+            List<String> newUserNames = new List<string>(rsvpUserNameTextBox.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
+            _lookSettings.rsvpSetWatchUser(newUserNames);
+        }
+
+        private void rsvpDenyUsernames_Click(object sender, EventArgs e)
+        {
+            List<String> usernames = _lookSettings.getRSVPWatchUsers();
+            rsvpUserNameTextBox.Text = string.Join(Environment.NewLine, usernames);
         }
     }
 }

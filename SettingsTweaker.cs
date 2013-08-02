@@ -60,6 +60,19 @@ namespace ShoeGrab
             nikeLoginEmailText.Text = Properties.Settings.Default.checkoutEmail;
             nikeLoginPasswordText.Text = Properties.Settings.Default.checkoutPassword;
 
+            //Load in the first and last name
+            firstNameText.Text = Properties.Settings.Default.firstName;
+            lastNameText.Text = Properties.Settings.Default.lastName;
+
+            //RSVP Enabled toggle
+            rsvpEnabledToggle.Checked = Properties.Settings.Default.rsvpEnabled;
+
+            //RSVP Keyword
+            rsvpKeywordText.Text = Properties.Settings.Default.rsvpKeyWords;
+
+            //Link Enabled toggle
+            linkEnabledToggle.Checked = Properties.Settings.Default.linkEnabled;
+
         }
 
         private void customBrowserChecked(object sender, EventArgs e)
@@ -157,6 +170,19 @@ namespace ShoeGrab
                 Properties.Settings.Default.checkoutEmail = nikeLoginEmailText.Text;
             }
             Properties.Settings.Default.checkoutPassword = nikeLoginPasswordText.Text;
+
+            //First and last name
+            Properties.Settings.Default.firstName = firstNameText.Text;
+            Properties.Settings.Default.lastName = lastNameText.Text;
+
+            //RSVP Enable
+            Properties.Settings.Default.rsvpEnabled = rsvpEnabledToggle.Checked;
+
+            //RSVP Keyword
+            Properties.Settings.Default.rsvpKeyWords = rsvpKeywordText.Text;
+
+            //Link Enabled toggle
+            Properties.Settings.Default.linkEnabled = linkEnabledToggle.Checked;
 
             //Save all set settings
             Properties.Settings.Default.Save();
