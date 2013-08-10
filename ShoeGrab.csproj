@@ -84,6 +84,12 @@
     <Compile Include="KeyWordManager.Designer.cs">
       <DependentUpon>KeyWordManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="loginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="loginForm.Designer.cs">
+      <DependentUpon>loginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LookSettings.cs" />
     <Compile Include="mainForm.cs">
       <SubType>Form</SubType>
@@ -109,6 +115,9 @@
     <Compile Include="TweetStream.cs" />
     <EmbeddedResource Include="KeyWordManager.resx">
       <DependentUpon>KeyWordManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="loginForm.resx">
+      <DependentUpon>loginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="mainForm.resx">
       <DependentUpon>mainForm.cs</DependentUpon>

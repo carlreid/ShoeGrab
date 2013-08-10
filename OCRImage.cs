@@ -30,6 +30,7 @@ namespace ShoeGrab
         {
             button1.Text = testImageCycle.ToString();
             textBox1.Text = @"C:\Users\Carl\SkyDrive\Scripts and Programs\ShoeGrab\image" + testImageCycle.ToString() +".jpg";
+            //textBox1.Text = @"C:\Users\Carl\SkyDrive\Scripts and Programs\ShoeGrab\image37.jpg";
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             Bitmap cleanedImage = getCleanedImage("URLWILLGOHERE-MAKE SURE TO CHANGE FROM TEXTBOX1.TEXT!");
@@ -76,6 +77,7 @@ namespace ShoeGrab
             //Create a structure element of type ellipse to fill in any holes caused by the erode (within characters)
             StructuringElementEx element = new StructuringElementEx(7, 7, 0, 0, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
             eroded = eroded.MorphologyEx(element, CV_MORPH_OP.CV_MOP_CLOSE, 1);
+            eroded = eroded.Dilate(1); //ADDED
             //Emgu.CV.CvInvoke.cvShowImage("eroded (3)", eroded);
 
             //Create a new image to find the border area.
@@ -154,7 +156,8 @@ namespace ShoeGrab
             //Create the OCR engine instance
             TesseractEngine engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default);
             //We know that the hastags only include #[A-Z] --- TODO: Some of them have numbers although OCR seems to struggle distinguishing from 5 and S for example. (https://twitter.com/NikeChicago/media/grid)
-            engine.SetVariable("tessedit_char_whitelist", "#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+            //engine.SetVariable("tessedit_char_whitelist", "#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+            engine.SetVariable("tessedit_char_whitelist", "#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             //Call the engine and get the page result
             Page result = engine.Process(image);
 
@@ -305,8 +308,29 @@ namespace ShoeGrab
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Bitmap ocr = new Bitmap(@"C:\Users\Carl\Desktop\boxtiff-2.01.eng.tar\eng\eng.arial.g4.tif");
-            getHashTag(ocr);
+            //Bitmap ocr = new Bitmap(@"C:\Users\Carl\Desktop\boxtiff-2.01.eng.tar\eng\eng.arial.g4.tif");
+            //getHashTag(ocr);
+
+            textBox1.Text = @"C:\Users\Carl\SkyDrive\Scripts and Programs\ShoeGrab\image13.jpg";
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            Bitmap cleanedImage = getCleanedImage("URLWILLGOHERE-MAKE SURE TO CHANGE FROM TEXTBOX1.TEXT!");
+            string hashTag = getHashTag(cleanedImage);
+            if (hashTag.Length <= 0)
+            {
+                //No hashtag! Try again with a larger output image.
+                cleanedImage = getCleanedImage("URLWILLGOHERE-MAKE SURE TO CHANGE FROM TEXTBOX1.TEXT!", true);
+                hashTag = getHashTag(cleanedImage);
+                if (hashTag.Length <= 0)
+                {
+                    //Still no result, last resort ask the user.
+                }
+            }
+            label1.Text = hashTag;
+            stopWatch.Stop();
+            label1.Text += " in (" + stopWatch.Elapsed.Milliseconds + "ms)";
+            testImageCycle++;
+
         }
 
     }

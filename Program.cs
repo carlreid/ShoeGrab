@@ -19,6 +19,7 @@ namespace ShoeGrab
             Application.Run(new mainForm());
             //Application.Run(new OCRImage());
             //Application.Run(new SettingsTweaker());
+            //Application.Run(new loginForm());
 
         }
     }

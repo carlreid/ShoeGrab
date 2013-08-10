@@ -350,7 +350,7 @@ namespace ShoeGrab
 
                                 //Add to cart
                                 //$(""div[class$='button-container add-to-cart']"").click();
-                                $(""div:regex(class, add-to-cart)"").click();
+                                $(""button:regex(class, add-to-cart)"").click();
 
                                 //Checkout
                                 //$(""div[class$='cart facet nav-section l-cell']"").children().children().click();
@@ -390,13 +390,6 @@ namespace ShoeGrab
                     break;
             }
 
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            webView.ExecuteJavascript(@"
-                        window.location = document.getElementById('ch4_loginPaypal').children[2].children[0].getAttribute('href');"
-            );
         }
         
         private void managerButton_Click(object sender, EventArgs e)
