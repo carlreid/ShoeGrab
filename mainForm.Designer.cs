@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.managerButton = new MetroFramework.Controls.MetroTile();
             this.updatePanel = new MetroFramework.Controls.MetroPanel();
             this.qrCodeBitcoinPicture = new System.Windows.Forms.PictureBox();
@@ -43,7 +42,6 @@
             this.webBackButton = new MetroFramework.Controls.MetroButton();
             this.webForwardButton = new MetroFramework.Controls.MetroButton();
             this.dashboardButton = new MetroFramework.Controls.MetroTile();
-            this.webView = new Awesomium.Windows.Forms.WebControl(this.components);
             this.webviewButton = new MetroFramework.Controls.MetroTile();
             this.settingsButton = new MetroFramework.Controls.MetroTile();
             this.bitcoinAdrLink = new MetroFramework.Controls.MetroLink();
@@ -107,6 +105,7 @@
             this.qrCodeBitcoinPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.qrCodeBitcoinPicture.TabIndex = 10;
             this.qrCodeBitcoinPicture.TabStop = false;
+            this.qrCodeBitcoinPicture.Visible = false;
             // 
             // rsvpEnabledLabel
             // 
@@ -256,15 +255,6 @@
             this.dashboardButton.EnabledChanged += new System.EventHandler(this.dashboardEnable);
             this.dashboardButton.Click += new System.EventHandler(this.dashboardButton_Click);
             // 
-            // webView
-            // 
-            this.webView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.webView.Location = new System.Drawing.Point(133, 50);
-            this.webView.Size = new System.Drawing.Size(1279, 554);
-            this.webView.TabIndex = 11;
-            // 
             // webviewButton
             // 
             this.webviewButton.ActiveControl = null;
@@ -307,6 +297,7 @@
             this.bitcoinAdrLink.Text = "1PVZw93m99c9u72jShcrYxwe75P2tjURCh";
             this.bitcoinAdrLink.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.bitcoinAdrLink.UseSelectable = true;
+            this.bitcoinAdrLink.Visible = false;
             this.bitcoinAdrLink.Click += new System.EventHandler(this.bitcoinAdrLink_Click);
             // 
             // donateLabel
@@ -320,6 +311,7 @@
             this.donateLabel.TabIndex = 8;
             this.donateLabel.Text = "Donate:";
             this.donateLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.donateLabel.Visible = false;
             // 
             // mainForm
             // 
@@ -335,7 +327,6 @@
             this.Controls.Add(this.webForwardButton);
             this.Controls.Add(this.webBackButton);
             this.Controls.Add(this.managerButton);
-            this.Controls.Add(this.webView);
             this.MinimumSize = new System.Drawing.Size(1432, 627);
             this.Name = "mainForm";
             this.Text = "ShoeGrab";
@@ -366,7 +357,6 @@
         private MetroFramework.Controls.MetroButton webBackButton;
         private MetroFramework.Controls.MetroButton webForwardButton;
         private MetroFramework.Controls.MetroTile dashboardButton;
-        private Awesomium.Windows.Forms.WebControl webView;
         private MetroFramework.Controls.MetroTile webviewButton;
         private MetroFramework.Controls.MetroTile settingsButton;
         private MetroFramework.Controls.MetroLink bitcoinAdrLink;

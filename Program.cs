@@ -11,15 +11,26 @@ namespace ShoeGrab
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new mainForm());
+            //Application.Run(new mainForm());
             //Application.Run(new OCRImage());
             //Application.Run(new SettingsTweaker());
-            //Application.Run(new loginForm());
+
+            using (var form = new loginForm())
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    Application.Run(new mainForm(form.twitterAuth, form.twitterAuthSecret));
+                }
+            }
+
+            //Application.Run(new loginForm(ref this));
 
         }
     }
