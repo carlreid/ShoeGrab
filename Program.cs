@@ -26,7 +26,7 @@ namespace ShoeGrab
                 var result = form.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    Application.Run(new mainForm(form.twitterAuth, form.twitterAuthSecret));
+                    Application.Run(new mainForm(form.twitterAuth, form.twitterAuthSecret, form.email, form.acLevel));
                 }
             }
 

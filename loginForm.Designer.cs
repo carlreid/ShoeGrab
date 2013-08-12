@@ -36,6 +36,8 @@
             this.loginButton = new MetroFramework.Controls.MetroButton();
             this.registerButton = new MetroFramework.Controls.MetroButton();
             this.forgotButton = new MetroFramework.Controls.MetroButton();
+            this.linkButton = new MetroFramework.Controls.MetroButton();
+            this.loginInfoLabel = new MetroFramework.Controls.MetroLabel();
             this.SuspendLayout();
             // 
             // loginLabel
@@ -137,6 +139,7 @@
             this.registerButton.Text = "Register";
             this.registerButton.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.registerButton.UseSelectable = true;
+            this.registerButton.Click += new System.EventHandler(this.registerButton_Click);
             // 
             // forgotButton
             // 
@@ -152,6 +155,38 @@
             this.forgotButton.Text = "Forgot";
             this.forgotButton.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.forgotButton.UseSelectable = true;
+            this.forgotButton.Click += new System.EventHandler(this.forgotButton_Click);
+            // 
+            // linkButton
+            // 
+            this.linkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkButton.FontSize = MetroFramework.MetroButtonSize.Tall;
+            this.linkButton.FontWeight = MetroFramework.MetroButtonWeight.Regular;
+            this.linkButton.Highlight = true;
+            this.linkButton.Location = new System.Drawing.Point(209, 456);
+            this.linkButton.Name = "linkButton";
+            this.linkButton.Size = new System.Drawing.Size(87, 37);
+            this.linkButton.Style = MetroFramework.MetroColorStyle.Red;
+            this.linkButton.TabIndex = 5;
+            this.linkButton.Text = "Link";
+            this.linkButton.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.linkButton.UseSelectable = true;
+            this.linkButton.Click += new System.EventHandler(this.linkButton_Click);
+            // 
+            // loginInfoLabel
+            // 
+            this.loginInfoLabel.AutoSize = true;
+            this.loginInfoLabel.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.loginInfoLabel.ForeColor = System.Drawing.Color.Red;
+            this.loginInfoLabel.Location = new System.Drawing.Point(357, 282);
+            this.loginInfoLabel.Name = "loginInfoLabel";
+            this.loginInfoLabel.Size = new System.Drawing.Size(48, 19);
+            this.loginInfoLabel.Style = MetroFramework.MetroColorStyle.Red;
+            this.loginInfoLabel.TabIndex = 6;
+            this.loginInfoLabel.Text = "Error:";
+            this.loginInfoLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.loginInfoLabel.UseCustomForeColor = true;
+            this.loginInfoLabel.Visible = false;
             // 
             // loginForm
             // 
@@ -159,6 +194,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 516);
+            this.Controls.Add(this.loginInfoLabel);
+            this.Controls.Add(this.linkButton);
             this.Controls.Add(this.forgotButton);
             this.Controls.Add(this.registerButton);
             this.Controls.Add(this.loginButton);
@@ -192,5 +229,7 @@
         private MetroFramework.Controls.MetroButton loginButton;
         private MetroFramework.Controls.MetroButton registerButton;
         private MetroFramework.Controls.MetroButton forgotButton;
+        private MetroFramework.Controls.MetroButton linkButton;
+        private MetroFramework.Controls.MetroLabel loginInfoLabel;
     }
 }

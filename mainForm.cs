@@ -1,15 +1,19 @@
 ﻿using CefSharp;
 using CefSharp.WinForms;
 using oAuthConnection;
+using Rhino.Licensing;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Configuration;
 using System.Drawing;
+using System.IO;
 using System.Net;
 using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
 using System.Windows.Forms;
 using TweetinCore.Enum;
@@ -30,9 +34,29 @@ namespace ShoeGrab
         WebView webView;
         TokenUser _user = null;
 
-        public mainForm(string twitterAuth, string twitterAuthSecret)
+        string _userEmail = null;
+        int _accessLevel = -1;
+
+        float delayer = 0;
+
+        string _publicKey = null;
+
+        public mainForm(string twitterAuth, string twitterAuthSecret, string userEmail, int accessLevel)
         {
             InitializeComponent();
+
+            if (!File.Exists("publicKey.xml"))
+            {
+                MessageBox.Show("Missing data, please redownload the application.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
+            else
+            {
+                _publicKey = File.ReadAllText("publicKey.xml");
+            }
+
+            _userEmail = userEmail;
+            _accessLevel = accessLevel;
 
             //Setup the webView and Settings
             // Disable caching.
@@ -51,7 +75,6 @@ namespace ShoeGrab
 
             //Setup the auth token
             _token = new Token(twitterAuth, twitterAuthSecret, "m28VNc4Cg3qxT4H0JuyWA", "Xn9nrjSJH9vDUpurOMpcWJpF295AXfbLZL8MoG2z8Q");
-            //_token = new Token(twitterAuth, twitterAuthSecret, "", "");
 
             //Load in the user information
             _user = new TokenUser(_token);
@@ -112,103 +135,6 @@ namespace ShoeGrab
             {
                 if (!webView.IsLoading)
                 {
-                    //if (_user == null)
-                    //{
-                    //    string source = webView.EvaluateScript("document.documentElement.outerHTML").ToString();
-
-                    //    if (source.Contains("<code>"))
-                    //    {
-                    //        var startTag = "<code>";
-                    //        int startIndex = source.IndexOf(startTag) + startTag.Length;
-                    //        int endIndex = source.IndexOf("</code>", startIndex);
-                    //        string code = source.Substring(startIndex, endIndex - startIndex);
-
-                    //        if (verifyCode(code))
-                    //        {
-                    //            //Start stream and setup panel
-                    //            _tStream.StartStream(_token);
-
-                    //            if (updatePanel.InvokeRequired)
-                    //            {
-                    //                updatePanel.Invoke(new MethodInvoker(delegate
-                    //                    {
-                    //                        updatePanel.Visible = true;
-                    //                    }
-                    //                ));
-                    //            }
-
-                    //            if (webView.InvokeRequired)
-                    //            {
-                    //                webView.Invoke(new MethodInvoker(delegate
-                    //                {
-                    //                    webView.Visible = false;
-                    //                }
-                    //                ));
-                    //            }
-
-                    //            if (usernameLabel.InvokeRequired)
-                    //            {
-                    //                usernameLabel.Invoke(new MethodInvoker(delegate
-                    //                {
-                    //                    usernameLabel.Text = _user.ScreenName;
-                    //                }
-                    //                ));
-                    //            }
-
-                    //            if (userAvatar.InvokeRequired)
-                    //            {
-                    //                userAvatar.Invoke(new MethodInvoker(delegate
-                    //                {
-                    //                    userAvatar.ImageLocation = _user.ProfileImageURLHttps;
-                    //                }
-                    //                ));
-                    //            }
-                                
-
-                    //            //Enable buttons
-                    //            if (managerButton.InvokeRequired)
-                    //            {
-                    //                managerButton.Invoke(new MethodInvoker(delegate
-                    //                {
-                    //                    managerButton.Enabled = true;
-                    //                }
-                    //                ));
-                    //            }
-
-                    //            if (dashboardButton.InvokeRequired)
-                    //            {
-                    //                dashboardButton.Invoke(new MethodInvoker(delegate
-                    //                {
-                    //                    dashboardButton.Enabled = true;
-                    //                }
-                    //                ));
-                    //            }
-
-                    //            if (webviewButton.InvokeRequired)
-                    //            {
-                    //                webviewButton.Invoke(new MethodInvoker(delegate
-                    //                {
-                    //                    webviewButton.Enabled = true;
-                    //                }
-                    //                ));
-                    //            }
-
-                    //            if (settingsButton.InvokeRequired)
-                    //            {
-                    //                settingsButton.Invoke(new MethodInvoker(delegate
-                    //                {
-                    //                    settingsButton.Enabled = true;
-                    //                }
-                    //                ));
-                    //            }
-                    //        }
-                    //        else
-                    //        {
-                    //            MessageBox.Show("Unable to verify PIN. Please try again.");
-                    //        }
-                    //    }
-                    //}
-
                     webForwardButton.Enabled = webView.CanGoForward;
                     webBackButton.Enabled = webView.CanGoBack;
                     if (webView.InvokeRequired)
@@ -254,55 +180,8 @@ namespace ShoeGrab
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            //while (!webView.IsBrowserInitialized)
-            //{
-            //    Application.DoEvents();
-            //}
-            //if (requestAuthToken())
-            //{
-            //    webView.Load("https://api.twitter.com/oauth/authenticate?oauth_token=" + _token.AccessToken);
-            //}
+
         }
-
-        //void webView_DocumentReady(object sender, Awesomium.Core.UrlEventArgs e)
-        //{
-        //    if (_user == null)
-        //    {
-        //        string source = webView.ExecuteJavascriptWithResult("document.documentElement.outerHTML");
-
-        //        if (source.Contains("<code>"))
-        //        {
-        //            var startTag = "<code>";
-        //            int startIndex = source.IndexOf(startTag) + startTag.Length;
-        //            int endIndex = source.IndexOf("</code>", startIndex);
-        //            string code = source.Substring(startIndex, endIndex - startIndex);
-
-        //            if (verifyCode(code))
-        //            {
-        //                //Start stream and setup panel
-        //                _tStream.StartStream(_token);
-        //                updatePanel.Visible = true;
-        //                webView.Visible = false;
-        //                usernameLabel.Text = _user.Screen_Name;
-        //                userAvatar.ImageLocation = _user.Profile_Image_URL_Https;
-
-        //                //Enable buttons
-        //                managerButton.Enabled = true;
-        //                dashboardButton.Enabled = true;
-        //                webviewButton.Enabled = true;
-        //                settingsButton.Enabled = true;
-        //            }
-        //            else
-        //            {
-        //                MessageBox.Show("Unable to verify PIN. Please try again.");
-        //            }
-        //        }
-        //    }
-
-        //    webForwardButton.Enabled = webView.CanGoForward();
-        //    webBackButton.Enabled = webView.CanGoBack();
-        //    webView.Focus();
-        //}
 
         public string UrlEncode(string value)
         {
@@ -317,10 +196,6 @@ namespace ShoeGrab
 
             // Return the fully-RFC3986-escaped string.
             return escaped.ToString();
-
-            //value = Uri.EscapeDataString(value);
-            //value = Regex.Replace(value, "(%[0-9a-f][0-9a-f])", c => c.Value.ToUpper());
-            //return value;
         }
 
         IUser getUser(IToken token, string username)
@@ -331,85 +206,9 @@ namespace ShoeGrab
 
         void followUser(string username)
         {
-            //IToken queryToken = token;
-            //Dictionary<string, object> result =  queryToken.ExecutePOSTQuery("https://api.twitter.com/1.1/friendships/create.json?screen_name=" + username + "&follow=true");
-
-            //NameValueCollection results = doPOSTRequest("https://api.twitter.com/1.1/friendships/create.json?screen_name=" + username + "&follow=true");
             _token.ExecutePOSTQuery("https://api.twitter.com/1.1/friendships/create.json?screen_name=" + username + "&follow=true");
         }
 
-        //NameValueCollection doPOSTRequest(string url)
-        //{
-        //    OAuthCredentials creds = new OAuthCredentials(_token.AccessToken, _token.AccessTokenSecret, _token.ConsumerKey, _token.ConsumerSecret);
-        //    OAuthWebRequestGenerator gen = new OAuthWebRequestGenerator();
-
-        //    HttpWebRequest req = gen.GenerateWebRequest(url, HttpMethod.POST, creds);
-        //    //HttpWebRequest req = gen.GenerateWebRequest(url, HttpMethod.POST, );
-
-        //    req.Method = "POST";
-        //    req.ContentLength = 0;
-        //    req.ServicePoint.Expect100Continue = false;
-
-        //    HttpWebResponse s = (HttpWebResponse)req.GetResponse();
-        //    System.IO.Stream stream = s.GetResponseStream();
-        //    string responseData = new System.IO.StreamReader(stream).ReadToEnd();
-
-        //    return HttpUtility.ParseQueryString(responseData);
-        //}
-
-        //NameValueCollection doGETRequest(string url)
-        //{
-        //    OAuthCredentials creds = new OAuthCredentials(_token.AccessToken, _token.AccessTokenSecret, _token.ConsumerKey, _token.ConsumerSecret);
-        //    OAuthWebRequestGenerator gen = new OAuthWebRequestGenerator();
-
-        //    HttpWebRequest req = gen.GenerateWebRequest(url, HttpMethod.GET, creds);
-        //    req.Method = "GET";
-        //    //req.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
-        //    //req.ContentLength = 0;
-        //    //req.ServicePoint.Expect100Continue = false;
-
-        //    HttpWebResponse s = (HttpWebResponse)req.GetResponse();
-        //    System.IO.Stream stream = s.GetResponseStream();
-        //    string responseData = new System.IO.StreamReader(stream).ReadToEnd();           
-
-        //    return HttpUtility.ParseQueryString(responseData); ;
-        //}
-
-        //bool requestAuthToken()
-        //{
-        //    NameValueCollection result = doPOSTRequest("https://api.twitter.com/oauth/request_token?oauth_callback=oob");
-
-        //    if (result.Get("oauth_callback_confirmed") == "true")
-        //    {
-        //        _token.AccessToken = result.Get("oauth_token");
-        //        _token.AccessTokenSecret = result.Get("oauth_token_secret");
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Unable to request authentication token");
-        //        return false;
-        //    }
-        //}
-
-        //bool verifyCode(string code)
-        //{
-        //    NameValueCollection result = doPOSTRequest("https://api.twitter.com/oauth/access_token?oauth_verifier=" + code);
-
-        //    if (result.Get("screen_name") != "")
-        //    {
-        //        _token.AccessToken = result.Get("oauth_token");
-        //        _token.AccessTokenSecret = result.Get("oauth_token_secret");
-        //        _user = getUser(_token, result.Get("screen_name"));
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Unable to verify pin.");
-        //        return false;
-        //    }
-
-        //}
 
         private void processTweetStream(Tweet tweet, bool force = false)
         {
@@ -419,83 +218,76 @@ namespace ShoeGrab
                 //Check to see if the tweet contains a keyword/username
                 if (_lookSettings.checkKeywords(tweet))
                 {
-                    //If the link sniper is enabled, check to see if there's a link.
-                    if (Properties.Settings.Default.linkEnabled)
-                    {
-                        List<string> urls = parseURLFromString(tweet.Text);
 
-                        if (urls.Count > 0 && Uri.IsWellFormedUriString(urls[0], UriKind.RelativeOrAbsolute))
+                    //Keyword Matched, lets see how fast we should handle it and recheck that license!
+                    //Check if it exists again, someone may have deleted it, some people are plain stupid.
+                    if (!File.Exists("license.xml"))
+                    {
+                        MessageBox.Show("Looks like your license is missing, the program will close, relogging should fix this.", "Where has it gone?", MessageBoxButtons.OK);
+                        this.Close();
+                    }
+
+                    //Okay file exists, lets check it.
+                    try
+                    {
+                        LicenseValidator validator = new LicenseValidator(_publicKey, "license.xml");
+                        validator.AssertValidLicense();
+
+                        //Check to see if the email and license are the same as on the license
+                        if (validator.Name == _userEmail && validator.LicenseType == (LicenseType)_accessLevel)
                         {
-                            switch (Properties.Settings.Default.browserSetting)
+                            //License is okay, continue with Tweet parsing, using the accessLevel to perform delay if needed.
+
+                            if (validator.LicenseType == LicenseType.Trial)
                             {
-                                case 0:
-                                    if (webView.InvokeRequired)
+                                int trialDelaySeconds = 10;
+                                trialTweetFoundLabel.Visible = true;
+
+                                BackgroundWorker bw = new BackgroundWorker();
+
+                                // this allows our worker to report progress during work
+                                bw.WorkerReportsProgress = true;
+
+                                // what to do in the background thread
+                                bw.DoWork += new DoWorkEventHandler(
+                                delegate(object o, DoWorkEventArgs args)
+                                {
+                                    BackgroundWorker b = o as BackgroundWorker;
+
+                                    // do some simple processing for 10 seconds
+                                    for (int i = 1; i <= trialDelaySeconds; i++)
                                     {
-                                        webView.Invoke(new MethodInvoker(delegate
-                                        {
-                                            webView.Visible = true;
-                                            //webView.BringToFront();
-                                            string realURL = GetRealUrl(urls[0]);
-                                            webView.Load(realURL);
-                                            webView.SetNavState(true, true, false);
-                                            this.TopMost = true;
-                                            this.TopMost = false;
-
-                                            updatePanel.Visible = false;
-
-                                            webForwardButton.Visible = true;
-                                            webBackButton.Visible = true;
-
-                                            //Begin auto checkout
-                                            if (Properties.Settings.Default.autoCheckout)
-                                            {
-                                                //Wait till the page has loaded
-                                                while (webView.IsLoading)
-                                                {
-                                                    Application.DoEvents();
-                                                }
-
-                                                //Once loaded, chech to see if the URL has /pd/ before running the autoCart code
-                                                
-                                                if (webView.Address.ToString().Contains("/pd/"))
-                                                {
-                                                    doAutoCheckout();
-                                                }
-                                            }
-
-
-                                        }));
+                                        // report the progress in percent
+                                        b.ReportProgress(trialDelaySeconds - i);
+                                        Thread.Sleep(1000);
                                     }
-                                    break;
-                                case 1:
-                                    System.Diagnostics.Process.Start(urls[0]);
-                                    break;
-                                case 2:
-                                    string browserPath = System.IO.Path.GetFullPath(Properties.Settings.Default.browserPath);
-                                    System.Diagnostics.Process.Start(browserPath, urls[0]);
-                                    break;
-                                default:
-                                    break;
+                                });
+
+                                // what to do when progress changed (update the progress bar for example)
+                                bw.ProgressChanged += new ProgressChangedEventHandler(
+                                delegate(object o, ProgressChangedEventArgs args)
+                                {
+                                    trialTweetFoundLabel.Text = string.Format("Tweet Found\nLoading in {0} seconds!", args);
+                                });
+
+                                // what to do when worker completes its task (notify the user)
+                                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+                                delegate(object o, RunWorkerCompletedEventArgs args)
+                                {
+                                    trialTweetFoundLabel.Visible = false;
+                                    parseTweetForSnipeandRSVP(tweet);
+                                });
                             }
-                            //MessageBox.Show(tweet.Text);
+                            else
+                            {
+                                parseTweetForSnipeandRSVP(tweet);
+                            }
                         }
                     }
-
-                    
-                    //If the RSVP is enabled, check to see if the tweet contains #RSVP and specified keyword
-                    if (Properties.Settings.Default.linkEnabled)
+                    catch (LicenseNotFoundException ex)
                     {
-                        if (tweet.Text.Contains("#RSVP") && tweet.Text.Contains(Properties.Settings.Default.rsvpKeyWords))
-                        {
-                            //TODO:
-                            // 1) Download image
-                            // 2) Cleanup image + OCR
-                            // 3) DM the result
-                        }
+                        MessageBox.Show("Invalid Licence");
                     }
-
-
-
                 }
             }
 
@@ -506,6 +298,84 @@ namespace ShoeGrab
             if (tweetsCheckedCounterLabel.InvokeRequired)
             {
                 tweetsCheckedCounterLabel.Invoke(new MethodInvoker(delegate { tweetsCheckedCounterLabel.Text = (++_tweetsChecked).ToString(); }));
+            }
+        }
+
+        private void parseTweetForSnipeandRSVP(Tweet tweet)
+        {
+            //If the link sniper is enabled, check to see if there's a link.
+            if (Properties.Settings.Default.linkEnabled)
+            {
+                List<string> urls = parseURLFromString(tweet.Text);
+
+                if (urls.Count > 0 && Uri.IsWellFormedUriString(urls[0], UriKind.RelativeOrAbsolute))
+                {
+                    switch (Properties.Settings.Default.browserSetting)
+                    {
+                        case 0:
+                            if (webView.InvokeRequired)
+                            {
+                                webView.Invoke(new MethodInvoker(delegate
+                                {
+                                    webView.Visible = true;
+                                    //webView.BringToFront();
+                                    string realURL = GetRealUrl(urls[0]);
+                                    webView.Load(realURL);
+                                    webView.SetNavState(true, true, false);
+                                    this.TopMost = true;
+                                    this.TopMost = false;
+
+                                    updatePanel.Visible = false;
+
+                                    webForwardButton.Visible = true;
+                                    webBackButton.Visible = true;
+
+                                    //Begin auto checkout
+                                    if (Properties.Settings.Default.autoCheckout)
+                                    {
+                                        //Wait till the page has loaded
+                                        while (webView.IsLoading)
+                                        {
+                                            Application.DoEvents();
+                                        }
+
+                                        //Once loaded, chech to see if the URL has /pd/ before running the autoCart code
+
+                                        if (webView.Address.ToString().Contains("/pd/"))
+                                        {
+                                            doAutoCheckout();
+                                        }
+                                    }
+
+
+                                }));
+                            }
+                            break;
+                        case 1:
+                            System.Diagnostics.Process.Start(urls[0]);
+                            break;
+                        case 2:
+                            string browserPath = System.IO.Path.GetFullPath(Properties.Settings.Default.browserPath);
+                            System.Diagnostics.Process.Start(browserPath, urls[0]);
+                            break;
+                        default:
+                            break;
+                    }
+                    //MessageBox.Show(tweet.Text);
+                }
+            }
+
+
+            //If the RSVP is enabled, check to see if the tweet contains #RSVP and specified keyword
+            if (Properties.Settings.Default.linkEnabled)
+            {
+                if (tweet.Text.Contains("#RSVP") && tweet.Text.Contains(Properties.Settings.Default.rsvpKeyWords))
+                {
+                    //TODO:
+                    // 1) Download image
+                    // 2) Cleanup image + OCR
+                    // 3) DM the result
+                }
             }
         }
 

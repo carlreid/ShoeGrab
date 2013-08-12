@@ -19,6 +19,8 @@ namespace ShoeGrab
         string publicKey;
         public string twitterAuth = "";
         public string twitterAuthSecret = "";
+        public string email = "";
+        public int acLevel = -1;
 
         public loginForm()
         {
@@ -96,69 +98,103 @@ namespace ShoeGrab
 
             if (dataValues.Length > 1)
             {
-                //Okay, user is valid ShoeBot user, do license checking if needed.
-                int accessLevel;
-                Int32.TryParse(dataValues[2], out accessLevel);
+                //Check if the auth data is ok
+                twitterAuth = dataValues[0];
+                twitterAuthSecret = dataValues[1];
+                email = emailTextBox.Text;
+                Int32.TryParse(dataValues[2], out acLevel);
 
-                if (accessLevel > 1)
+                if (!String.IsNullOrEmpty(twitterAuth) && !String.IsNullOrEmpty(twitterAuthSecret))
                 {
-                    if (!File.Exists("license.xml"))
+                    //Okay, user is valid ShoeBot user, do license checking if needed.
+                    int accessLevel;
+                    Int32.TryParse(dataValues[2], out accessLevel);
+
+                    if (accessLevel > 0)
                     {
-                        //License doesn't exist, no worries, they may have just bought.
-                        //Perform a POST to the server and request the license using email/pass
-                        HttpWebRequest licenseRequest = (HttpWebRequest)WebRequest.Create("http://www.vyprbot.com/auth/license.php");
-
-                        licenseRequest.Method = "POST";
-                        licenseRequest.ContentType = "application/x-www-form-urlencoded";
-                        licenseRequest.ContentLength = data.Length;
-                        licenseRequest.UserAgent = "ShoeGrab";
-
-                        Stream licRequestStream = licenseRequest.GetRequestStream();
-                        licRequestStream.Write(data, 0, data.Length);
-                        licRequestStream.Close();
-
-                        HttpWebResponse licResponse = (HttpWebResponse)licenseRequest.GetResponse();
-
-                        Stream licAnswer = licResponse.GetResponseStream();
-                        StreamReader licAnswerReader = new StreamReader(licAnswer);
-                        string licResponseHTML = licAnswerReader.ReadToEnd();
-
-                        if (!String.IsNullOrEmpty(licResponseHTML) && licResponseHTML != "na")
+                        if (!File.Exists("license.xml"))
                         {
-                            File.WriteAllText("license.xml", licResponseHTML);
-                        }
-                        else
-                        {
-                            MessageBox.Show("If you just purchased, please try again in a moment", "No valid license", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                    }
+                            //License doesn't exist, no worries, they may have just bought.
+                            //Perform a POST to the server and request the license using email/pass
+                            HttpWebRequest licenseRequest = (HttpWebRequest)WebRequest.Create("http://www.vyprbot.com/auth/license.php");
 
-                    try
-                    {
-                        LicenseValidator validator = new LicenseValidator(publicKey, "license.xml");
-                        validator.AssertValidLicense();
+                            licenseRequest.Method = "POST";
+                            licenseRequest.ContentType = "application/x-www-form-urlencoded";
+                            licenseRequest.ContentLength = data.Length;
+                            licenseRequest.UserAgent = "ShoeGrab";
 
-                        //Check to see if the email and license are the same as on the license
-                        if (validator.Name == emailTextBox.Text && validator.LicenseType == (LicenseType)Enum.Parse(typeof(LicenseType), dataValues[2]))
-                        {
-                            twitterAuth = dataValues[0];
-                            twitterAuthSecret = dataValues[1];
-                            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                            Stream licRequestStream = licenseRequest.GetRequestStream();
+                            licRequestStream.Write(data, 0, data.Length);
+                            licRequestStream.Close();
+
+                            HttpWebResponse licResponse = (HttpWebResponse)licenseRequest.GetResponse();
+
+                            Stream licAnswer = licResponse.GetResponseStream();
+                            StreamReader licAnswerReader = new StreamReader(licAnswer);
+                            string licResponseHTML = licAnswerReader.ReadToEnd();
+
+                            if (!String.IsNullOrEmpty(licResponseHTML) && licResponseHTML != "na")
+                            {
+                                File.WriteAllText("license.xml", licResponseHTML);
+                            }
+                            else
+                            {
+                                MessageBox.Show("If you just purchased, please try again in a moment", "No valid license", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
+
+                        try
+                        {
+                            LicenseValidator validator = new LicenseValidator(publicKey, "license.xml");
+                            validator.AssertValidLicense();
+
+                            //Check to see if the email and license are the same as on the license
+                            if (validator.Name == emailTextBox.Text && validator.LicenseType == (LicenseType)Enum.Parse(typeof(LicenseType), dataValues[2]))
+                            {
+                                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                            }
+                        }
+                        catch (LicenseNotFoundException ex)
+                        {
+                            MessageBox.Show("Invalid Licence");
+                        }
+                        this.Close();
                     }
-                    catch (LicenseNotFoundException ex)
-                    {
-                        MessageBox.Show("Invalid Licence");
-                    }
-                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("You have not linked your account to Twitter, click the Link button.", "Link to Twitter", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
             }
             else
             {
-                MessageBox.Show("ShoeGrab isn't on your account.");
+                if (dataValues[0] == "BADLOGIN")
+                {
+                    loginInfoLabel.Text = "Error: Invalid Login";
+                    loginInfoLabel.Visible = true;
+                }
+                else
+                {
+                    MessageBox.Show("ShoeGrab isn't on your account.");
+                }
             }
 
+        }
+
+        private void registerButton_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.vyprbot.com/register");
+        }
+
+        private void forgotButton_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.vyprbot.com/forgot");
+        }
+
+        private void linkButton_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.vyprbot.com/account");
         }
     }
 }

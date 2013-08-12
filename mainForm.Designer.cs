@@ -46,6 +46,7 @@
             this.settingsButton = new MetroFramework.Controls.MetroTile();
             this.bitcoinAdrLink = new MetroFramework.Controls.MetroLink();
             this.donateLabel = new MetroFramework.Controls.MetroLabel();
+            this.trialTweetFoundLabel = new MetroFramework.Controls.MetroLabel();
             this.updatePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.qrCodeBitcoinPicture)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -75,6 +76,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.updatePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.updatePanel.Controls.Add(this.trialTweetFoundLabel);
             this.updatePanel.Controls.Add(this.qrCodeBitcoinPicture);
             this.updatePanel.Controls.Add(this.rsvpEnabledLabel);
             this.updatePanel.Controls.Add(this.linkSniperEnabledLabel);
@@ -313,6 +315,23 @@
             this.donateLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.donateLabel.Visible = false;
             // 
+            // trialTweetFoundLabel
+            // 
+            this.trialTweetFoundLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trialTweetFoundLabel.AutoSize = true;
+            this.trialTweetFoundLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.trialTweetFoundLabel.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.trialTweetFoundLabel.ForeColor = System.Drawing.Color.Red;
+            this.trialTweetFoundLabel.Location = new System.Drawing.Point(581, 21);
+            this.trialTweetFoundLabel.Name = "trialTweetFoundLabel";
+            this.trialTweetFoundLabel.Size = new System.Drawing.Size(121, 50);
+            this.trialTweetFoundLabel.TabIndex = 11;
+            this.trialTweetFoundLabel.Text = "Tweet Found\r\nLoading in ";
+            this.trialTweetFoundLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.trialTweetFoundLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.trialTweetFoundLabel.UseCustomForeColor = true;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -364,6 +383,7 @@
         private MetroFramework.Controls.MetroLabel linkSniperEnabledLabel;
         private MetroFramework.Controls.MetroLabel rsvpEnabledLabel;
         private System.Windows.Forms.PictureBox qrCodeBitcoinPicture;
+        private MetroFramework.Controls.MetroLabel trialTweetFoundLabel;
     }
 }
 
