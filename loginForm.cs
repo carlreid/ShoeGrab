@@ -22,6 +22,8 @@ namespace ShoeGrab
         public string email = "";
         public int acLevel = -1;
 
+        //ProgramUpdater _updater;
+
         public loginForm()
         {
             InitializeComponent();
@@ -196,5 +198,6 @@ namespace ShoeGrab
         {
             System.Diagnostics.Process.Start("http://www.vyprbot.com/account");
         }
+        
     }
 }

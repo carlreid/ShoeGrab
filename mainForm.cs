@@ -33,17 +33,20 @@ namespace ShoeGrab
         KeyWordManager _keywordManager;
         WebView webView;
         TokenUser _user = null;
+        OCRSolver _ocrSolver = null;
 
         string _userEmail = null;
         int _accessLevel = -1;
 
-        float delayer = 0;
+        //float delayer = 0;
 
         string _publicKey = null;
 
         public mainForm(string twitterAuth, string twitterAuthSecret, string userEmail, int accessLevel)
         {
             InitializeComponent();
+
+            _ocrSolver = new OCRSolver();
 
             if (!File.Exists("publicKey.xml"))
             {
@@ -71,10 +74,11 @@ namespace ShoeGrab
             webView.Size = new Size(1279, 554);
             webView.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
             webView.PropertyChanged += webView_PropertyChanged;
+            
             this.Controls.Add(webView);
 
             //Setup the auth token
-            _token = new Token(twitterAuth, twitterAuthSecret, "m28VNc4Cg3qxT4H0JuyWA", "Xn9nrjSJH9vDUpurOMpcWJpF295AXfbLZL8MoG2z8Q");
+            _token = new Token(twitterAuth, twitterAuthSecret, "X7y6Z60t38Pwx0XgWoADAw", "5hGZEjJWhChTTWu5YP9YgM97JZhROmWo8uv0ORk71o");
 
             //Load in the user information
             _user = new TokenUser(_token);
@@ -216,7 +220,7 @@ namespace ShoeGrab
             if (Properties.Settings.Default.linkEnabled || Properties.Settings.Default.rsvpEnabled)
             {
                 //Check to see if the tweet contains a keyword/username
-                if (_lookSettings.checkKeywords(tweet))
+                if (_lookSettings.checkKeywords(tweet) || _lookSettings.checkRSVPKeywords(tweet))
                 {
 
                     //Keyword Matched, lets see how fast we should handle it and recheck that license!
@@ -241,7 +245,10 @@ namespace ShoeGrab
                             if (validator.LicenseType == LicenseType.Trial)
                             {
                                 int trialDelaySeconds = 10;
-                                trialTweetFoundLabel.Visible = true;
+                                trialTweetFoundLabel.Invoke(new MethodInvoker(delegate
+                                {
+                                    trialTweetFoundLabel.Visible = true;
+                                }));
 
                                 BackgroundWorker bw = new BackgroundWorker();
 
@@ -267,16 +274,24 @@ namespace ShoeGrab
                                 bw.ProgressChanged += new ProgressChangedEventHandler(
                                 delegate(object o, ProgressChangedEventArgs args)
                                 {
-                                    trialTweetFoundLabel.Text = string.Format("Tweet Found\nLoading in {0} seconds!", args);
+                                    trialTweetFoundLabel.Invoke(new MethodInvoker(delegate
+                                    {
+                                        trialTweetFoundLabel.Text = string.Format("Tweet Found\nLoading in {0} seconds!", args.ProgressPercentage);
+                                    }));
                                 });
 
                                 // what to do when worker completes its task (notify the user)
                                 bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
                                 delegate(object o, RunWorkerCompletedEventArgs args)
                                 {
-                                    trialTweetFoundLabel.Visible = false;
+                                    trialTweetFoundLabel.Invoke(new MethodInvoker(delegate
+                                    {
+                                        trialTweetFoundLabel.Visible = false;
+                                    }));
                                     parseTweetForSnipeandRSVP(tweet);
                                 });
+
+                                bw.RunWorkerAsync();
                             }
                             else
                             {
@@ -306,77 +321,177 @@ namespace ShoeGrab
             //If the link sniper is enabled, check to see if there's a link.
             if (Properties.Settings.Default.linkEnabled)
             {
-                List<string> urls = parseURLFromString(tweet.Text);
-
-                if (urls.Count > 0 && Uri.IsWellFormedUriString(urls[0], UriKind.RelativeOrAbsolute))
+                //Double check to see if this tweet is for the link sniper
+                if (_lookSettings.checkKeywords(tweet)/* && !tweet.Text.Contains("#RSVP")*/)
                 {
-                    switch (Properties.Settings.Default.browserSetting)
+
+                    List<string> urls = parseURLFromString(tweet.Text);
+
+                    if (urls.Count > 0 && Uri.IsWellFormedUriString(urls[0], UriKind.RelativeOrAbsolute))
                     {
-                        case 0:
-                            if (webView.InvokeRequired)
-                            {
-                                webView.Invoke(new MethodInvoker(delegate
+                        switch (Properties.Settings.Default.browserSetting)
+                        {
+                            case 0:
+                                if (webView.InvokeRequired)
                                 {
-                                    webView.Visible = true;
-                                    //webView.BringToFront();
-                                    string realURL = GetRealUrl(urls[0]);
-                                    webView.Load(realURL);
-                                    webView.SetNavState(true, true, false);
-                                    this.TopMost = true;
-                                    this.TopMost = false;
-
-                                    updatePanel.Visible = false;
-
-                                    webForwardButton.Visible = true;
-                                    webBackButton.Visible = true;
-
-                                    //Begin auto checkout
-                                    if (Properties.Settings.Default.autoCheckout)
+                                    webView.Invoke(new MethodInvoker(delegate
                                     {
-                                        //Wait till the page has loaded
-                                        while (webView.IsLoading)
+                                        webView.Visible = true;
+                                        //webView.BringToFront();
+                                        string realURL = GetRealUrl(urls[0]);
+                                        webView.Load(realURL);
+                                        webView.SetNavState(true, true, false);
+                                        this.TopMost = true;
+                                        this.TopMost = false;
+
+                                        updatePanel.Visible = false;
+
+                                        webForwardButton.Visible = true;
+                                        webBackButton.Visible = true;
+
+                                        //Begin auto checkout
+                                        if (Properties.Settings.Default.autoCheckout)
                                         {
-                                            Application.DoEvents();
+                                            //Wait till the page has loaded
+                                            while (webView.IsLoading)
+                                            {
+                                                Application.DoEvents();
+                                            }
+
+                                            //Once loaded, chech to see if the URL has /pd/ before running the autoCart code
+
+                                            if (webView.Address.ToString().Contains("/pd/"))
+                                            {
+                                                doAutoCheckout();
+                                            }
                                         }
 
-                                        //Once loaded, chech to see if the URL has /pd/ before running the autoCart code
 
-                                        if (webView.Address.ToString().Contains("/pd/"))
-                                        {
-                                            doAutoCheckout();
-                                        }
-                                    }
-
-
-                                }));
-                            }
-                            break;
-                        case 1:
-                            System.Diagnostics.Process.Start(urls[0]);
-                            break;
-                        case 2:
-                            string browserPath = System.IO.Path.GetFullPath(Properties.Settings.Default.browserPath);
-                            System.Diagnostics.Process.Start(browserPath, urls[0]);
-                            break;
-                        default:
-                            break;
+                                    }));
+                                }
+                                break;
+                            case 1:
+                                System.Diagnostics.Process.Start(urls[0]);
+                                break;
+                            case 2:
+                                string browserPath = System.IO.Path.GetFullPath(Properties.Settings.Default.browserPath);
+                                System.Diagnostics.Process.Start(browserPath, urls[0]);
+                                break;
+                            default:
+                                break;
+                        }
+                        //MessageBox.Show(tweet.Text);
                     }
-                    //MessageBox.Show(tweet.Text);
                 }
             }
 
 
             //If the RSVP is enabled, check to see if the tweet contains #RSVP and specified keyword
-            if (Properties.Settings.Default.linkEnabled)
+            if (Properties.Settings.Default.rsvpEnabled)
             {
-                if (tweet.Text.Contains("#RSVP") && tweet.Text.Contains(Properties.Settings.Default.rsvpKeyWords))
+                //Check if this tweet contains rsvp words
+                if (tweet.Text.Contains("#RSVP") && _lookSettings.checkRSVPKeywords(tweet))
                 {
-                    //TODO:
-                    // 1) Download image
-                    // 2) Cleanup image + OCR
-                    // 3) DM the result
+                    string solvedHashTag = "";
+
+                    //Check to see if the media count is more than one. We only want to check for images.
+                    if (tweet.Media.Count >= 1)
+                    {
+                        //Begin a loop in case of multiple
+                        for (int mediaCount = 0; mediaCount < tweet.Media.Count; ++mediaCount)
+                        {
+                            //Check to see if the media type is an image
+                            if (tweet.Media[mediaCount].MediaType == "photo")
+                            {
+                                //Get the image URL
+                                string imageURL = tweet.Media[mediaCount].MediaURL;
+                                
+                                string hashTag = _ocrSolver.CleanAndOCRImage(imageURL);
+
+                                if (!String.IsNullOrEmpty(hashTag))
+                                {
+                                    //Was solved, store in solvedHashTag
+                                    solvedHashTag = hashTag;
+                                }
+                                else
+                                {
+                                    //Hashtag is empty which means the OCR/Image Process failed, ask the user.
+                                    using (var form = new OCRImage(imageURL))
+                                    {
+                                        var result = form.ShowDialog();
+                                        if (result == DialogResult.OK)
+                                        {
+                                            solvedHashTag = form.userText;
+                                        }
+                                        else
+                                        {
+                                            solvedHashTag = "";
+                                        }
+                                    }
+                                }
+
+
+                                //Check to see if the solved hashtag has value and begin DM if it has.
+                                if (!String.IsNullOrEmpty(solvedHashTag))
+                                {
+
+                                    string builtName = Properties.Settings.Default.firstName + " " + Properties.Settings.Default.lastName;
+                                    string shoeSize = Properties.Settings.Default.shoeSize.ToString();
+
+                                    IUser receiver = new User(tweet.Creator.Id);
+                                    IMessage msg = new Tweetinvi.Message(UrlEncode(String.Format("{0} {1} {2}", solvedHashTag, builtName, shoeSize)), receiver);
+                                    try
+                                    {
+                                        msg.Send(_token);
+                                    }
+                                    catch (WebException ex)
+                                    {
+                                        this.Invoke(new MethodInvoker(delegate
+                                        {
+                                            MessageBox.Show(this, "Unable to send a Direct Message to " + tweet.Creator.ScreenName + ".", "Unable to Direct Message", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        }));
+                                    }
+                                }
+
+
+                            }
+                        }
+                    }
+
                 }
             }
+        }
+
+        public static bool IsUrlImage(string url)
+        {
+            try
+            {
+                var request = WebRequest.Create(url);
+                request.Timeout = 5000;
+                using (var response = request.GetResponse())
+                {
+                    using (var responseStream = response.GetResponseStream())
+                    {
+                        if (!response.ContentType.Contains("text/html"))
+                        {
+                            using (var br = new BinaryReader(responseStream))
+                            {
+                                // e.g. test for a JPEG header here
+                                var soi = br.ReadUInt16();  // Start of Image (SOI) marker (FFD8)
+                                var jfif = br.ReadUInt16(); // JFIF marker (FFE0)
+                                return soi == 0xd8ff && jfif == 0xe0ff;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                //Trace.WriteLine(ex);
+                //throw;
+                return false;
+            }
+            return false;
         }
 
         private void doAutoCheckout(){

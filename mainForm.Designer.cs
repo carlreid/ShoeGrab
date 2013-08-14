@@ -30,6 +30,7 @@
         {
             this.managerButton = new MetroFramework.Controls.MetroTile();
             this.updatePanel = new MetroFramework.Controls.MetroPanel();
+            this.trialTweetFoundLabel = new MetroFramework.Controls.MetroLabel();
             this.qrCodeBitcoinPicture = new System.Windows.Forms.PictureBox();
             this.rsvpEnabledLabel = new MetroFramework.Controls.MetroLabel();
             this.linkSniperEnabledLabel = new MetroFramework.Controls.MetroLabel();
@@ -46,7 +47,6 @@
             this.settingsButton = new MetroFramework.Controls.MetroTile();
             this.bitcoinAdrLink = new MetroFramework.Controls.MetroLink();
             this.donateLabel = new MetroFramework.Controls.MetroLabel();
-            this.trialTweetFoundLabel = new MetroFramework.Controls.MetroLabel();
             this.updatePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.qrCodeBitcoinPicture)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -96,6 +96,24 @@
             this.updatePanel.VerticalScrollbarHighlightOnWheel = false;
             this.updatePanel.VerticalScrollbarSize = 10;
             this.updatePanel.Visible = false;
+            // 
+            // trialTweetFoundLabel
+            // 
+            this.trialTweetFoundLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trialTweetFoundLabel.AutoSize = true;
+            this.trialTweetFoundLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.trialTweetFoundLabel.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.trialTweetFoundLabel.ForeColor = System.Drawing.Color.Red;
+            this.trialTweetFoundLabel.Location = new System.Drawing.Point(581, 21);
+            this.trialTweetFoundLabel.Name = "trialTweetFoundLabel";
+            this.trialTweetFoundLabel.Size = new System.Drawing.Size(121, 50);
+            this.trialTweetFoundLabel.TabIndex = 11;
+            this.trialTweetFoundLabel.Text = "Tweet Found\r\nLoading in ";
+            this.trialTweetFoundLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.trialTweetFoundLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.trialTweetFoundLabel.UseCustomForeColor = true;
+            this.trialTweetFoundLabel.Visible = false;
             // 
             // qrCodeBitcoinPicture
             // 
@@ -315,23 +333,6 @@
             this.donateLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.donateLabel.Visible = false;
             // 
-            // trialTweetFoundLabel
-            // 
-            this.trialTweetFoundLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.trialTweetFoundLabel.AutoSize = true;
-            this.trialTweetFoundLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
-            this.trialTweetFoundLabel.FontWeight = MetroFramework.MetroLabelWeight.Bold;
-            this.trialTweetFoundLabel.ForeColor = System.Drawing.Color.Red;
-            this.trialTweetFoundLabel.Location = new System.Drawing.Point(581, 21);
-            this.trialTweetFoundLabel.Name = "trialTweetFoundLabel";
-            this.trialTweetFoundLabel.Size = new System.Drawing.Size(121, 50);
-            this.trialTweetFoundLabel.TabIndex = 11;
-            this.trialTweetFoundLabel.Text = "Tweet Found\r\nLoading in ";
-            this.trialTweetFoundLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.trialTweetFoundLabel.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.trialTweetFoundLabel.UseCustomForeColor = true;
-            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -346,7 +347,6 @@
             this.Controls.Add(this.webForwardButton);
             this.Controls.Add(this.webBackButton);
             this.Controls.Add(this.managerButton);
-            this.MinimumSize = new System.Drawing.Size(1432, 627);
             this.Name = "mainForm";
             this.Text = "ShoeGrab";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;

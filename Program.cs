@@ -21,6 +21,15 @@ namespace ShoeGrab
             //Application.Run(new OCRImage());
             //Application.Run(new SettingsTweaker());
 
+            //ProgramUpdater _updater = new ProgramUpdater();
+            //_updater.CheckForUpdates();
+
+            //var fileDownloader = new FileDownloader("http://www.vyprbot.com/update/shoegrab/NAppUpdate.Framework.dll");
+
+            //byte[] fileData = fileDownloader.Download();
+
+            //int i = fileData.Length;
+
             using (var form = new loginForm())
             {
                 var result = form.ShowDialog();
@@ -31,7 +40,9 @@ namespace ShoeGrab
             }
 
             //Application.Run(new loginForm(ref this));
-
         }
+
+
+
     }
 }

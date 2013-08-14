@@ -88,5 +88,10 @@ namespace ShoeGrab
             return _keyWords.Any(w => tweet.Text.Contains(w)) || _watchUsers.Any(w => tweet.Creator.ScreenName.Contains(w));
         }
 
+        public bool checkRSVPKeywords(Tweet tweet)
+        {
+            return _rsvpKeyWords.Any(w => tweet.Text.Contains(w)) || _rsvpWatchUsers.Any(w => tweet.Creator.ScreenName.Contains(w));
+        }
+
     }
 }
